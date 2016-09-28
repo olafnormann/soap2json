@@ -1,0 +1,546 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="http://register.nhn.no/PR" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="PersonService" targetNamespace="http://register.nhn.no/PR" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsp:Policy wsu:Id="CustomBinding_IPersonService_policy">
+    <wsp:ExactlyOne>
+      <wsp:All>
+        <sp:TransportBinding xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <wsp:Policy>
+            <sp:TransportToken>
+              <wsp:Policy>
+                <sp:HttpsToken RequireClientCertificate="false" />
+              </wsp:Policy>
+            </sp:TransportToken>
+            <sp:AlgorithmSuite>
+              <wsp:Policy>
+                <sp:Basic256 />
+              </wsp:Policy>
+            </sp:AlgorithmSuite>
+            <sp:Layout>
+              <wsp:Policy>
+                <sp:Strict />
+              </wsp:Policy>
+            </sp:Layout>
+            <sp:IncludeTimestamp />
+          </wsp:Policy>
+        </sp:TransportBinding>
+        <sp:EndorsingSupportingTokens xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <wsp:Policy>
+            <sp:SecureConversationToken sp:IncludeToken="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy/IncludeToken/AlwaysToRecipient">
+              <wsp:Policy>
+                <sp:BootstrapPolicy>
+                  <wsp:Policy>
+                    <sp:SignedParts>
+                      <sp:Body />
+                      <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+                      <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+                      <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+                      <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+                      <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+                      <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+                      <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+                    </sp:SignedParts>
+                    <sp:EncryptedParts>
+                      <sp:Body />
+                    </sp:EncryptedParts>
+                    <sp:TransportBinding>
+                      <wsp:Policy>
+                        <sp:TransportToken>
+                          <wsp:Policy>
+                            <sp:HttpsToken RequireClientCertificate="false" />
+                          </wsp:Policy>
+                        </sp:TransportToken>
+                        <sp:AlgorithmSuite>
+                          <wsp:Policy>
+                            <sp:Basic256 />
+                          </wsp:Policy>
+                        </sp:AlgorithmSuite>
+                        <sp:Layout>
+                          <wsp:Policy>
+                            <sp:Strict />
+                          </wsp:Policy>
+                        </sp:Layout>
+                        <sp:IncludeTimestamp />
+                      </wsp:Policy>
+                    </sp:TransportBinding>
+                    <sp:SignedSupportingTokens>
+                      <wsp:Policy>
+                        <sp:UsernameToken sp:IncludeToken="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy/IncludeToken/AlwaysToRecipient">
+                          <wsp:Policy>
+                            <sp:WssUsernameToken10 />
+                          </wsp:Policy>
+                        </sp:UsernameToken>
+                      </wsp:Policy>
+                    </sp:SignedSupportingTokens>
+                    <sp:Wss11>
+                      <wsp:Policy />
+                    </sp:Wss11>
+                    <sp:Trust10>
+                      <wsp:Policy>
+                        <sp:MustSupportIssuedTokens />
+                        <sp:RequireClientEntropy />
+                        <sp:RequireServerEntropy />
+                      </wsp:Policy>
+                    </sp:Trust10>
+                  </wsp:Policy>
+                </sp:BootstrapPolicy>
+              </wsp:Policy>
+            </sp:SecureConversationToken>
+          </wsp:Policy>
+        </sp:EndorsingSupportingTokens>
+        <sp:Wss11 xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <wsp:Policy />
+        </sp:Wss11>
+        <sp:Trust10 xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <wsp:Policy>
+            <sp:MustSupportIssuedTokens />
+            <sp:RequireClientEntropy />
+            <sp:RequireServerEntropy />
+          </wsp:Policy>
+        </sp:Trust10>
+        <wsaw:UsingAddressing />
+      </wsp:All>
+    </wsp:ExactlyOne>
+  </wsp:Policy>
+  <wsdl:types>
+    <xs:schema elementFormDefault="qualified" targetNamespace="http://register.nhn.no/PR" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+      <xs:import namespace="http://schemas.datacontract.org/2004/07/NHN.Contracts.Data" />
+      <xs:import namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+      <xs:element name="Search">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" name="parameters" nillable="true" type="tns:SearchParameters" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:complexType name="SearchParameters">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="Address" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="DateOfBirth" nillable="true" type="xs:dateTime" />
+          <xs:element minOccurs="0" name="FirstName" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="LastName" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="MiddleName" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="MunicipalityCode" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="Page" nillable="true" type="xs:int" />
+          <xs:element minOccurs="0" name="PostalPlace" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="ResultsPerPage" type="xs:int" />
+          <xs:element minOccurs="0" name="SearchFhNumberPersonsToo" type="xs:boolean" />
+          <xs:element minOccurs="0" name="ZipCode" nillable="true" type="xs:string" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:element name="SearchParameters" nillable="true" type="tns:SearchParameters" />
+      <xs:element name="SearchResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element xmlns:q1="http://schemas.datacontract.org/2004/07/NHN.Contracts.Data" minOccurs="0" name="SearchResult" nillable="true" type="q1:SearchResult" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:complexType name="ArrayOfPerson">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="Person" nillable="true" type="tns:Person" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:element name="ArrayOfPerson" nillable="true" type="tns:ArrayOfPerson" />
+      <xs:complexType name="Person">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="Addresses" nillable="true" type="tns:ArrayOfAddress" />
+          <xs:element minOccurs="0" name="Citizenship" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="CitizenshipCode" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="Custody" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="DateCitizenship" nillable="true" type="xs:dateTime" />
+          <xs:element minOccurs="0" name="DateCustody" nillable="true" type="xs:dateTime" />
+          <xs:element minOccurs="0" name="DateMaritalStatus" nillable="true" type="xs:dateTime" />
+          <xs:element minOccurs="0" name="DateOfBirth" nillable="true" type="xs:dateTime" />
+          <xs:element minOccurs="0" name="DateParentalResponsibility" nillable="true" type="xs:dateTime" />
+          <xs:element minOccurs="0" name="DateStatus" nillable="true" type="xs:dateTime" />
+          <xs:element minOccurs="0" name="DateWithoutLegalCapacity" nillable="true" type="xs:dateTime" />
+          <xs:element minOccurs="0" name="DateWorkPermit" nillable="true" type="xs:dateTime" />
+          <xs:element minOccurs="0" name="DufNo" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="FathersNIN" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="GivenName" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="MaritalStatus" nillable="true" type="xs:int" />
+          <xs:element minOccurs="0" name="MiddleName" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="MothersNIN" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="NIN" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="NewNIN" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="OldNIN" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="ParentalResponsibility" nillable="true" type="xs:int" />
+          <xs:element minOccurs="0" name="RegStatus" nillable="true" type="xs:int" />
+          <xs:element minOccurs="0" name="Sn" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="SpouseNIN" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="StatusCountryCode" nillable="true" type="xs:int" />
+          <xs:element minOccurs="0" name="WithoutLegalCapacity" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="WorkPermit" nillable="true" type="xs:string" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:element name="Person" nillable="true" type="tns:Person" />
+      <xs:complexType name="ArrayOfAddress">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="Address" nillable="true" type="tns:Address" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:element name="ArrayOfAddress" nillable="true" type="tns:ArrayOfAddress" />
+      <xs:complexType name="Address">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="AddressLine1" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="AddressLine2" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="AddressLine3" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="ApartmentNumber" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="CadastralNumber" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="CoAddress" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="Constituency" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="Country" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="CurrentAddress" type="xs:boolean" />
+          <xs:element minOccurs="0" name="DateAdrFrom" nillable="true" type="xs:dateTime" />
+          <xs:element minOccurs="0" name="DatePostalType" nillable="true" type="xs:dateTime" />
+          <xs:element minOccurs="0" name="DistrictCode" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="DistrictName" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="HouseLetter" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="HouseNumber" nillable="true" type="xs:int" />
+          <xs:element minOccurs="0" name="Municipality" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="PostalAddress" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="PostalAddressValidFrom" nillable="true" type="xs:dateTime" />
+          <xs:element minOccurs="0" name="PostalCode" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="PostalPlace" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="PostalType" nillable="true" type="xs:int" />
+          <xs:element minOccurs="0" name="PropertyNumber" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="SchoolDistrict" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="St" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="StreetName" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="StreetNumber" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="XCoord" nillable="true" type="xs:decimal" />
+          <xs:element minOccurs="0" name="YCoord" nillable="true" type="xs:decimal" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:element name="Address" nillable="true" type="tns:Address" />
+      <xs:element name="GetPerson">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element xmlns:q2="http://schemas.datacontract.org/2004/07/NHN.Contracts.Data" minOccurs="0" name="parameters" nillable="true" type="q2:LookupParameters" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="GetPersonResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" name="GetPersonResult" nillable="true" type="tns:Person" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="GetPersons">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element xmlns:q3="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="listOfNIN" nillable="true" type="q3:ArrayOfstring" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="GetPersonsResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" name="GetPersonsResult" nillable="true" type="tns:ArrayOfPerson" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="GetAddresses">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element xmlns:q4="http://schemas.datacontract.org/2004/07/NHN.Contracts.Data" minOccurs="0" name="parameters" nillable="true" type="q4:LookupParameters" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="GetAddressesResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" name="GetAddressesResult" nillable="true" type="tns:ArrayOfAddress" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="GetChildren">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" name="NIN" nillable="true" type="xs:string" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="GetChildrenResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" name="GetChildrenResult" nillable="true" type="tns:ArrayOfPerson" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="GetIdentityChanges">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" name="from" type="xs:dateTime" />
+            <xs:element minOccurs="0" name="to" nillable="true" type="xs:dateTime" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="GetIdentityChangesResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" name="GetIdentityChangesResult" nillable="true" type="tns:ArrayOfIdentityChange" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:complexType name="ArrayOfIdentityChange">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="IdentityChange" nillable="true" type="tns:IdentityChange" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:element name="ArrayOfIdentityChange" nillable="true" type="tns:ArrayOfIdentityChange" />
+      <xs:complexType name="IdentityChange">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="DateStatus" nillable="true" type="xs:dateTime" />
+          <xs:element minOccurs="0" name="NIN" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="OldNIN" nillable="true" type="xs:string" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:element name="IdentityChange" nillable="true" type="tns:IdentityChange" />
+      <xs:element name="GetChanges">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" name="from" type="xs:dateTime" />
+            <xs:element minOccurs="0" name="to" nillable="true" type="xs:dateTime" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="GetChangesResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" name="GetChangesResult" nillable="true" type="tns:ArrayOfPerson" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:schema>
+    <xs:schema xmlns:tns="http://schemas.microsoft.com/2003/10/Serialization/" attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://schemas.microsoft.com/2003/10/Serialization/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+      <xs:element name="anyType" nillable="true" type="xs:anyType" />
+      <xs:element name="anyURI" nillable="true" type="xs:anyURI" />
+      <xs:element name="base64Binary" nillable="true" type="xs:base64Binary" />
+      <xs:element name="boolean" nillable="true" type="xs:boolean" />
+      <xs:element name="byte" nillable="true" type="xs:byte" />
+      <xs:element name="dateTime" nillable="true" type="xs:dateTime" />
+      <xs:element name="decimal" nillable="true" type="xs:decimal" />
+      <xs:element name="double" nillable="true" type="xs:double" />
+      <xs:element name="float" nillable="true" type="xs:float" />
+      <xs:element name="int" nillable="true" type="xs:int" />
+      <xs:element name="long" nillable="true" type="xs:long" />
+      <xs:element name="QName" nillable="true" type="xs:QName" />
+      <xs:element name="short" nillable="true" type="xs:short" />
+      <xs:element name="string" nillable="true" type="xs:string" />
+      <xs:element name="unsignedByte" nillable="true" type="xs:unsignedByte" />
+      <xs:element name="unsignedInt" nillable="true" type="xs:unsignedInt" />
+      <xs:element name="unsignedLong" nillable="true" type="xs:unsignedLong" />
+      <xs:element name="unsignedShort" nillable="true" type="xs:unsignedShort" />
+      <xs:element name="char" nillable="true" type="tns:char" />
+      <xs:simpleType name="char">
+        <xs:restriction base="xs:int" />
+      </xs:simpleType>
+      <xs:element name="duration" nillable="true" type="tns:duration" />
+      <xs:simpleType name="duration">
+        <xs:restriction base="xs:duration">
+          <xs:pattern value="\-?P(\d*D)?(T(\d*H)?(\d*M)?(\d*(\.\d*)?S)?)?" />
+          <xs:minInclusive value="-P10675199DT2H48M5.4775808S" />
+          <xs:maxInclusive value="P10675199DT2H48M5.4775807S" />
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:element name="guid" nillable="true" type="tns:guid" />
+      <xs:simpleType name="guid">
+        <xs:restriction base="xs:string">
+          <xs:pattern value="[\da-fA-F]{8}-[\da-fA-F]{4}-[\da-fA-F]{4}-[\da-fA-F]{4}-[\da-fA-F]{12}" />
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:attribute name="FactoryType" type="xs:QName" />
+      <xs:attribute name="Id" type="xs:ID" />
+      <xs:attribute name="Ref" type="xs:IDREF" />
+    </xs:schema>
+    <xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/NHN.Contracts.Data" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/NHN.Contracts.Data" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+      <xs:import namespace="http://register.nhn.no/PR" />
+      <xs:complexType name="SearchResult">
+        <xs:sequence>
+          <xs:element xmlns:q1="http://register.nhn.no/PR" minOccurs="0" name="Persons" nillable="true" type="q1:ArrayOfPerson" />
+          <xs:element minOccurs="0" name="Status" nillable="true" type="tns:Status" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:element name="SearchResult" nillable="true" type="tns:SearchResult" />
+      <xs:complexType name="Status">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="Code" type="xs:int" />
+          <xs:element minOccurs="0" name="CurrentPage" type="xs:int" />
+          <xs:element minOccurs="0" name="Message" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="Reason" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="ResultsPerPage" type="xs:int" />
+          <xs:element minOccurs="0" name="TotalPages" type="xs:int" />
+          <xs:element minOccurs="0" name="TotalResults" type="xs:int" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:element name="Status" nillable="true" type="tns:Status" />
+      <xs:complexType name="LookupParameters">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="Date" nillable="true" type="xs:dateTime" />
+          <xs:element minOccurs="0" name="NIN" nillable="true" type="xs:string" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:element name="LookupParameters" nillable="true" type="tns:LookupParameters" />
+    </xs:schema>
+    <xs:schema xmlns:tns="http://schemas.microsoft.com/2003/10/Serialization/Arrays" elementFormDefault="qualified" targetNamespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+      <xs:complexType name="ArrayOfstring">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="string" nillable="true" type="xs:string" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:element name="ArrayOfstring" nillable="true" type="tns:ArrayOfstring" />
+    </xs:schema>
+  </wsdl:types>
+  <wsdl:message name="IPersonService_Search_InputMessage">
+    <wsdl:part name="parameters" element="tns:Search" />
+  </wsdl:message>
+  <wsdl:message name="IPersonService_Search_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SearchResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPersonService_GetPerson_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetPerson" />
+  </wsdl:message>
+  <wsdl:message name="IPersonService_GetPerson_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetPersonResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPersonService_GetPersons_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetPersons" />
+  </wsdl:message>
+  <wsdl:message name="IPersonService_GetPersons_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetPersonsResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPersonService_GetAddresses_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetAddresses" />
+  </wsdl:message>
+  <wsdl:message name="IPersonService_GetAddresses_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetAddressesResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPersonService_GetChildren_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetChildren" />
+  </wsdl:message>
+  <wsdl:message name="IPersonService_GetChildren_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetChildrenResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPersonService_GetIdentityChanges_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetIdentityChanges" />
+  </wsdl:message>
+  <wsdl:message name="IPersonService_GetIdentityChanges_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetIdentityChangesResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPersonService_GetChanges_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetChanges" />
+  </wsdl:message>
+  <wsdl:message name="IPersonService_GetChanges_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetChangesResponse" />
+  </wsdl:message>
+  <wsdl:portType name="IPersonService">
+    <wsdl:operation name="Search">
+      <wsdl:input wsaw:Action="http://register.nhn.no/PR/IPersonService/Search" message="tns:IPersonService_Search_InputMessage" />
+      <wsdl:output wsaw:Action="http://register.nhn.no/PR/IPersonService/SearchResponse" message="tns:IPersonService_Search_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetPerson">
+      <wsdl:input wsaw:Action="http://register.nhn.no/PR/IPersonService/GetPerson" message="tns:IPersonService_GetPerson_InputMessage" />
+      <wsdl:output wsaw:Action="http://register.nhn.no/PR/IPersonService/GetPersonResponse" message="tns:IPersonService_GetPerson_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetPersons">
+      <wsdl:input wsaw:Action="http://register.nhn.no/PR/IPersonService/GetPersons" message="tns:IPersonService_GetPersons_InputMessage" />
+      <wsdl:output wsaw:Action="http://register.nhn.no/PR/IPersonService/GetPersonsResponse" message="tns:IPersonService_GetPersons_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAddresses">
+      <wsdl:input wsaw:Action="http://register.nhn.no/PR/IPersonService/GetAddresses" message="tns:IPersonService_GetAddresses_InputMessage" />
+      <wsdl:output wsaw:Action="http://register.nhn.no/PR/IPersonService/GetAddressesResponse" message="tns:IPersonService_GetAddresses_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetChildren">
+      <wsdl:input wsaw:Action="http://register.nhn.no/PR/IPersonService/GetChildren" message="tns:IPersonService_GetChildren_InputMessage" />
+      <wsdl:output wsaw:Action="http://register.nhn.no/PR/IPersonService/GetChildrenResponse" message="tns:IPersonService_GetChildren_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetIdentityChanges">
+      <wsdl:input wsaw:Action="http://register.nhn.no/PR/IPersonService/GetIdentityChanges" message="tns:IPersonService_GetIdentityChanges_InputMessage" />
+      <wsdl:output wsaw:Action="http://register.nhn.no/PR/IPersonService/GetIdentityChangesResponse" message="tns:IPersonService_GetIdentityChanges_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetChanges">
+      <wsdl:input wsaw:Action="http://register.nhn.no/PR/IPersonService/GetChanges" message="tns:IPersonService_GetChanges_InputMessage" />
+      <wsdl:output wsaw:Action="http://register.nhn.no/PR/IPersonService/GetChangesResponse" message="tns:IPersonService_GetChanges_OutputMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="CustomBinding_IPersonService" type="tns:IPersonService">
+    <wsp:PolicyReference URI="#CustomBinding_IPersonService_policy" />
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="Search">
+      <soap12:operation soapAction="http://register.nhn.no/PR/IPersonService/Search" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPerson">
+      <soap12:operation soapAction="http://register.nhn.no/PR/IPersonService/GetPerson" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPersons">
+      <soap12:operation soapAction="http://register.nhn.no/PR/IPersonService/GetPersons" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAddresses">
+      <soap12:operation soapAction="http://register.nhn.no/PR/IPersonService/GetAddresses" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetChildren">
+      <soap12:operation soapAction="http://register.nhn.no/PR/IPersonService/GetChildren" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetIdentityChanges">
+      <soap12:operation soapAction="http://register.nhn.no/PR/IPersonService/GetIdentityChanges" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetChanges">
+      <soap12:operation soapAction="http://register.nhn.no/PR/IPersonService/GetChanges" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="PersonService">
+    <wsdl:port name="CustomBinding_IPersonService" binding="tns:CustomBinding_IPersonService">
+      <soap12:address location="https://personregister-web.test.nhn.no/Personregister.WCF/PersonService.svc" />
+      <wsa10:EndpointReference>
+        <wsa10:Address>https://personregister-web.test.nhn.no/Personregister.WCF/PersonService.svc</wsa10:Address>
+        <Identity xmlns="http://schemas.xmlsoap.org/ws/2006/02/addressingidentity">
+          <Dns>personregister-web.test.nhn.no</Dns>
+        </Identity>
+      </wsa10:EndpointReference>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>
