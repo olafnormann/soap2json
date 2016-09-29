@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using soap2json.personref;
-using System.Web.Script.Serialization;
+//using soap2json.personref;
+//using System.Web.Script.Serialization;
+using soap2json.Models;
 
 namespace soap2json.Controllers
 {
@@ -15,33 +16,66 @@ namespace soap2json.Controllers
             return View();
         }
 
-        public ActionResult s2j()
+        public string personregister(string id)
         {
-            JavaScriptSerializer jser = new JavaScriptSerializer();
-            String str;
-            Person pp;
-            PersonServiceClient ps = new PersonServiceClient();
-            LookupParameters lookup = new LookupParameters();
-            lookup.NIN = "13049544221";
-            ps.ClientCredentials.UserName.UserName = "test";
-            ps.ClientCredentials.UserName.Password = "BF32511";
-
-            pp = ps.GetPerson(lookup);
-            str = jser.Serialize(pp);
-
-            //Det følgende er et forsøk på å få til newline (<br />) men ga opp.....:
-            IHtmlString html = new HtmlString("Serialisert JSON for Persnr "
-                        + lookup.NIN.ToString()
-                        + " Navn: " + pp.GivenName +  ": < br />") ;
-
-            ViewBag.Message =  (html + str);
+            const string format = "Format: ./personregister/###########";
             
-            return View();
+            if (id != null && id.Length!=11)
+            {
+                return "Lengde på personnr er feil (må være 11 siffer) <br />" + format;
+            }
+            else if (id == null)
+            {
+                return "Du må angi personnr (11 siffer) <br />" + format;
+            }
+            else //angitt persnr ser ut til å være rett. Prøve å hente:
+            {
+                personregister persreg = new personregister();
+
+                string pp = persreg.HentPerson(id);
+
+                if (pp == null || pp=="null")
+                {
+                    return "Personnr " + id + " finnes ikke! <br />" + format;
+                }
+                else //Ser ut til at vi har fått noe fra persreg:
+                {
+                    return pp;
+                }
+            }
         }
 
+        public string barnregister(string id)
+        {
+            const string format = "Format: ./barneregister/###########";
+
+            if (id != null && id.Length != 11)
+            {
+                return "Lengde på personnr er feil (må være 11 siffer) <br />" + format;
+            }
+            else if (id == null)
+            {
+                return "Du må angi personnr (11 siffer) til mor eller far<br />" + format;
+            }
+            else //angitt persnr ser ut til å være rett. Prøve å hente:
+            {
+                personregister persreg = new personregister();
+
+                string pp = persreg.HentBarn(id);
+
+                if (pp == null || pp == "null")
+                {
+                    return "Personnr " + id + " finnes ikke! <br />" + format;
+                }
+                else //Ser ut til at vi har fått noe fra persreg:
+                {
+                    return pp;
+                }
+            }
+        }
         public ActionResult Contact()
         {
-            ViewBag.Message = "Your contact page.";
+            ViewBag.Message = "Olaf Normann.";
 
             return View();
         }
