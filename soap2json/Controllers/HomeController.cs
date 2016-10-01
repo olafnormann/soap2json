@@ -11,22 +11,26 @@ namespace soap2json.Controllers
 {
     public class HomeController : Controller
     {
+        const int len_pers_nr = 11;
+
         public ActionResult Index()
         {
             return View();
         }
 
         public string personregister(string id)
-        {//TEst
+        {
             const string format = "Format: ./personregister/###########";
-            
-            if (id != null && id.Length!=11)
+
+            if (id != null && id.Length!=len_pers_nr)
             {
-                return "Lengde på personnr er feil (må være 11 siffer) <br />" + format;
+                return "Lengde på personnr er feil (må være " 
+                           + len_pers_nr.ToString() + " siffer) <br />" + format;
             }
             else if (id == null)
             {
-                return "Du må angi personnr (11 siffer) <br />" + format;
+                return "Du må angi personnr (" + len_pers_nr.ToString() 
+                            + " siffer) <br />" + format;
             }
             else //angitt persnr ser ut til å være rett. Prøve å hente:
             {
@@ -49,13 +53,15 @@ namespace soap2json.Controllers
         {
             const string format = "Format: ./barneregister/###########";
 
-            if (id != null && id.Length != 11)
+            if (id != null && id.Length != len_pers_nr)
             {
-                return "Lengde på personnr er feil (må være 11 siffer) <br />" + format;
+                return "Lengde på personnr er feil (må være " + len_pers_nr.ToString()
+                            + " siffer) <br />" + format;
             }
             else if (id == null)
             {
-                return "Du må angi personnr (11 siffer) til mor eller far<br />" + format;
+                return "Du må angi personnr (" + len_pers_nr.ToString() 
+                            + " siffer) til mor eller far<br />" + format;
             }
             else //angitt persnr ser ut til å være rett. Prøve å hente:
             {
@@ -76,7 +82,7 @@ namespace soap2json.Controllers
         public ActionResult Contact()
         {
             ViewBag.Message = "Olaf Normann.";
-
+            ViewBag.Olaf = "Må finne ut hva dette Viewbag er fornoe...";
             return View();
         }
     }
